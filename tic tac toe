@@ -1,0 +1,329 @@
+#include <iostream>
+//int as;
+using namespace std;
+
+// 1 i win
+// -1 u win
+// 0 game is on
+// 2 tie
+
+//1 x
+//2 o
+//0 blank
+
+int state(int* board)
+{
+    int flag_me=0,flag_u=0;
+
+    for(int i=0;i<3;i++)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    flag_me=0;
+    flag_u=0;
+
+    for(int i=3;i<6;i++)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    flag_me=0;
+    flag_u=0;
+
+    for(int i=0;i<9;i+=3)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    flag_me=0;
+    flag_u=0;
+
+    for(int i=1;i<9;i+=3)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+        flag_me=0;
+    flag_u=0;
+
+    for(int i=2;i<9;i+=3)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    flag_me=0;
+    flag_u=0;
+
+    for(int i=6;i<9;i++)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    flag_me=0;
+    flag_u=0;
+
+    for(int i=0;i<9;i+=4)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    flag_me=0;
+    flag_u=0;
+
+    for(int i=2;i<8;i+=2)
+    {
+        if(board[i]==1)
+            flag_me++;
+        if(board[i]==2)
+            flag_u++;
+    }
+    if(flag_me==3)
+        return 1;
+    if(flag_u==3)
+        return -1;
+
+    for(int i=0;i<9;i++)
+    {
+        if(board[i]==0)
+            return 0;
+    }
+
+    return 2;
+}
+
+int max_score(int stat,int* board,int point);
+
+int min_score(int stat,int* board,int point)
+{
+    int game=state(board);
+    if(game){
+          //  cout<<game<<endl;
+        if(game==1)
+            return -999;
+        else if(game==-1)
+            return 999;
+        else
+            return 0;
+    }
+
+    int min_value=999,po,p;
+    for(int i=0;i<9-stat;i++)
+    {
+        po=-1;
+        int j=0;
+        while(po!=i)
+        {
+            if(!board[j])
+                po++;
+            j++;
+        }
+        board[j-1]=1;
+         /*for(int l=0;l<9;l+=3)
+        {
+            cout<<"min"<<board[l]<<" "<<board[l+1]<<" "<<board[l+2]<<endl;
+        }*/
+        p=max_score(stat+1,board,i);
+        board[j-1]=0;
+      //  cout<<j-1<<endl;
+        if(p==-999){
+            return p;
+           // as=j-1;
+           }
+        if(min_value>p){
+            min_value=p;
+            //as=j-1;
+            }
+    }
+
+//cout<<min_value<<" ";
+    return min_value;
+}
+
+int max_score(int stat,int* board,int point)
+{
+    int game=state(board);
+    if(game){
+           // cout<<game<<endl;
+        if(game==1)
+            return -999;
+        else if(game==-1)
+            return 999;
+        else
+            return 0;
+    }
+
+    int max_value=-999,po;
+    for(int i=0;i<9-stat;i++)
+    {
+        po=-1;
+        int j=0,p;
+        while(po!=i)
+        {
+            if(!board[j])
+                po++;
+            j++;
+        }
+
+        board[j-1]=2;
+        /* for(int l=0;l<9;l+=3)
+        {
+            cout<<"max"<<board[l]<<" "<<board[l+1]<<" "<<board[l+2]<<endl;
+        }*/
+        p=min_score(stat+1,board,i);
+
+        board[j-1]=0;
+        //cout<<p<<endl;
+        if(p==999)
+            return p;
+
+        if(max_value<p)
+            max_value=p;
+    }//cout<<max_value<<" ";
+    return max_value;
+}
+
+int main()
+{
+    int* board=new int [9];
+    for(int i=0;i<9;i++)
+    {
+        board[i]=0;
+    }
+    for(int i=0;i<9;i+=2)
+    {
+        int move;
+        cin>>move;
+        board[move]=2;
+        int* virtualboard=new int [9];
+        for(int j=0;j<9;j++)
+        {
+            virtualboard[j]=board[j];
+        }
+       // int p=999,u=0;
+       // for(int j=0;j<10-(i+2);j++)
+        //{
+            //int s=min_score(i+2,virtualboard,0);
+            int min_value=999,po,p,poi;
+    for(int m=0;m<9-(i+1);m++)
+    {
+        po=-1;
+        int j=0;
+        while(po!=m)
+        {
+            if(!board[j])
+                po++;
+            j++;
+        }
+        board[j-1]=1;
+         /*for(int l=0;l<9;l+=3)
+        {
+            cout<<"min"<<board[l]<<" "<<board[l+1]<<" "<<board[l+2]<<endl;
+        }*/
+        p=max_score(i+2,board,m);
+        board[j-1]=0;
+        //cout<<j-1<<endl;
+        if(p==-999){
+            poi=j-1;
+            break;
+           // as=j-1;
+           }
+        if(min_value>p){
+            min_value=p;
+            poi=j-1;
+            //as=j-1;
+            }
+    }
+            //cout<<s<<endl;
+          /*  if(p<s)
+            {
+                p=s;
+                //cout<<p;
+                u=j;
+                //cout<<j;
+            }
+        }
+*/
+        /*int l=0,ka=-1;
+        //cout<<u;
+        while(ka!=u)
+        {
+            if(!board[l])
+                ka++;
+            l++;
+            //cout<<"m";
+        }*/
+        board[poi]=1;
+int l;
+        for(l=0;l<9;l+=3)
+        {
+            cout<<board[l]<<" "<<board[l+1]<<" "<<board[l+2]<<endl;
+        }
+        int game=state(board);
+        if(game==1)
+        {
+            cout<<"i win"<<endl;
+            break;
+        }
+        else if(game==-1)
+        {
+            cout<<"u win"<<endl;
+            break;
+        }
+        else if(game==2)
+        {
+            cout<<"tie"<<endl;
+            break;
+        }
+    }
+    return 0;
+}
